@@ -28,7 +28,7 @@ HamiltonSystem(d,m,q0,p0,F=missing,U=missing,sol=missing) = HamiltonSystem(d,m,F
 
 
 function getEnergy(HS,q,p)
-    return p'*HS.Minv*p + HS.U(p)
+    return p'*HS.Minv*p + HS.U(q)
 end
 
 function getEnergyNorm(HS,Q,P)
