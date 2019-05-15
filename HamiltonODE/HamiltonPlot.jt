@@ -1,7 +1,7 @@
-function plotOrbits(Qs,names="",aspect_ratio=:equal)
+function plotOrbits(Qs,names="";kwargs...)
     X = [Q[1,:] for Q in Qs]
     Y = [Q[2,:] for Q in Qs]
-    return plot(X,Y,aspect_ratio=aspect_ratio,label=hcat(names...))
+    return plot(X,Y,label=hcat(names...);kwargs...)
 end
 
 function plotT(ts,Qs,titles)
