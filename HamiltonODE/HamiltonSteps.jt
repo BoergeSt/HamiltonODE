@@ -19,6 +19,13 @@ function i_euler_step(q,p,dt,HS;tol = 1e-6,max_iter=Int(1e6))
     return (dt,Q,P)
 end
 
+function theta_step(q,p,dt,HS;tol = 1e-6,max_iter=Int(1e6),theta=0.5)
+    _,Qe,Pe = euler_step(q,p,dt,HS)
+    _,Qi,Pi = i_euler_step(q,p,dt,HS,tol = tol,max_iter = max_iter)
+    Q,P = theta.*(Qe,Pe).+(1-theta).*(Qi,Pi)
+    return (dt,Q,P)
+end
+
 function s_euler_step(q,p,dt,HS)
     P = p+dt*HS.F(q)
     Q = q+dt*HS.Minv*P
