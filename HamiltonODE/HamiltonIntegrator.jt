@@ -1,3 +1,4 @@
+using Printf
 
 struct Integrator
     step
@@ -69,7 +70,7 @@ function integrate(HS,Is)
 end
 
 function getNames(Is)
-     return ["$(typeof(I.step).name.mt.name) with dt=$(I.dt)" for I in Is]
+     return ["$(typeof(I.step).name.mt.name) with dt=$(@sprintf("%.2e", I.dt))" for I in Is]
 end
 
 println("Finished loading HamiltonIntegrator")
