@@ -1,8 +1,0 @@
-
-include("HamiltonODE/HamiltonSystem.jt")
-include("HamiltonODE/HamiltonSteps.jt")
-include("HamiltonODE/HamiltonIntegrator.jt")
-include("HamiltonODE/HamiltonPlot.jt")
-
-println("============================")
-println("Finished loading HamiltonODE")
