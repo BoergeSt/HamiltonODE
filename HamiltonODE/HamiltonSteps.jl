@@ -4,7 +4,7 @@ function euler_step(q,p,dt,HS)
     return (dt,Q,P)
 end
 
-function i_euler_step(q,p,dt,HS;tol = 1e-6,max_iter=Int(1e6))
+function i_euler_step(q,p,dt,HS;tol = 1e-6,max_iter=100,no_warning=false)
     Q=q;P=p
     for i in 1:max_iter
         Qn = q+dt*HS.Minv*P
@@ -15,7 +15,9 @@ function i_euler_step(q,p,dt,HS;tol = 1e-6,max_iter=Int(1e6))
         Q=Qn
         P=Pn
     end
-    println("WARNING: Implicity euler step did not reach tol.")
+    if !no_warning
+        println("WARNING: Implicity euler step did not reach tol.")
+    end
     return (dt,Q,P)
 end
 
