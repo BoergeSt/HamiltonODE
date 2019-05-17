@@ -21,9 +21,9 @@ function i_euler_step(q,p,dt,HS;tol = 1e-6,max_iter=100,no_warning=false)
     return (dt,Q,P)
 end
 
-function theta_step(q,p,dt,HS;tol = 1e-6,max_iter=Int(1e6),theta=0.5)
+function theta_step(q,p,dt,HS;theta=0.5, kwargs...)
     _,Qe,Pe = euler_step(q,p,dt,HS)
-    _,Qi,Pi = i_euler_step(q,p,dt,HS,tol = tol,max_iter = max_iter)
+    _,Qi,Pi = i_euler_step(q,p,dt,HS;kwargs...)
     Q,P = theta.*(Qe,Pe).+(1-theta).*(Qi,Pi)
     return (dt,Q,P)
 end
@@ -60,14 +60,16 @@ end
 
 
 
-function projected_step(q,p,dt,HS,tol=1e-5,sigma=0.5,max_iter=100,step=rk4_step)
+function projected_step(q,p,dt,HS;tol=1e-5,sigma=0.5,max_iter=100,step=rk4_step,no_warning=false)
     dt,Q,P = step(q,p,dt,HS)
     E0 = getEnergy(HS,HS.q0,HS.p0)
     E=getEnergy(HS,Q,P)-E0
     i=0;
     while abs(E)>tol
         if i > max_iter
-            println("WARNING: projected rk4 did not reach tol")
+            if !no_warning
+                println("WARNING: projected step did not reach tol")
+            end
             return (dt,Q,P)
         end
         dq = HS.F(Q)*E
@@ -78,7 +80,9 @@ function projected_step(q,p,dt,HS,tol=1e-5,sigma=0.5,max_iter=100,step=rk4_step)
         j = 0
         while diff>=0
             if j>=max_iter
-                println("WARNING: could not find sigma small enough!")
+                if !no_warning
+                    println("WARNING: projected step could not find sigma small enough!")
+                end
                 return (dt,Q,P)
             end
             s*=sigma
