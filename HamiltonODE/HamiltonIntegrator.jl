@@ -39,7 +39,7 @@ function integrate_constant_dt(HS,step::Function,dt,T;kwargs...)
     t=[dt*i for i in 0:N]
     Q[:,1]=HS.q0
     P[:,1]=HS.p0
-    progress = Progress(N,dt=0.05, desc="Integrating using $(typeof(step).name.mt.name) dt = $dt...")
+    progress = Progress(N, desc="Integrating using $(typeof(step).name.mt.name) dt = $dt...")
     lastupdate=0
     for i in 1:N
         DT,q,p=step(Q[:,i],P[:,i],dt,HS;kwargs...)
