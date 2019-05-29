@@ -1,4 +1,4 @@
-include("../../HamiltonODE.jt")
+include("../../HamiltonODE.jl")
 
 using Plots
 pyplot()
