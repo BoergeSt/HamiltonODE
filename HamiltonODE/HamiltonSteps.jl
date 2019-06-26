@@ -40,6 +40,18 @@ function verlet_step(q,p,dt,HS)
     return (dt,Q,P)
 end
 
+
+function puls_projected_step(q,p,dt,HS;step=verlet_step,kwargs...)
+    (dt,Q,P) = verlet_step(q,p,dt,HS;kwargs...);
+    E = getEnergy(HS,HS.q0,HS.p0)
+    if P'*HS.Minv*P<0.001 || U(Q)>E
+        gamma = 1
+    else
+        gamma = sqrt(2*(E-HS.U(Q))/(P'*HS.Minv*P))
+    end
+    return (dt,Q,gamma*P)
+end
+
 function rk4_step(q,p,dt,HS)
     k1q = dt*HS.Minv*p
     k1p = dt*HS.F(q)
@@ -60,8 +72,8 @@ end
 
 
 
-function projected_step(q,p,dt,HS;tol=1e-5,sigma=0.5,max_iter=100,step=rk4_step,no_warning=false)
-    dt,Q,P = step(q,p,dt,HS)
+function projected_step(q,p,dt,HS;tol=1e-5,sigma=0.5,max_iter=100,step=rk4_step,no_warning=false,kwargs...)
+    dt,Q,P = step(q,p,dt,HS,kwargs...)
     E0 = getEnergy(HS,HS.q0,HS.p0)
     E=getEnergy(HS,Q,P)-E0
     i=0;
