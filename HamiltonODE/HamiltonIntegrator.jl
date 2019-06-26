@@ -70,7 +70,7 @@ function integrate(HS,Is)
 end
 
 function getNames(Is)
-     return ["$(typeof(I.step).name.mt.name) with dt=$(@sprintf("%.2e", I.dt))" for I in Is]
+     return ["$(typeof(I.step).name.mt.name) with dt=$(@sprintf("%.2e", I.dt))$( length(I.kwargs)>0 ? "\n$(join(["$k: $(I.kwargs[k])" for k in keys(I.kwargs)],", "))" : "")" for I in Is]
 end
 
 println("Finished loading HamiltonIntegrator")
