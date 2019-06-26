@@ -1,6 +1,11 @@
-function plotOrbits(Qs,names="";kwargs...)
-    X = [Q[1,:] for Q in Qs]
-    Y = [Q[2,:] for Q in Qs]
+function plotOrbits(Qs,names="";index=0,kwargs...)
+    if index != 0
+        X = [Q[1,:][index] for Q in Qs]
+        Y = [Q[2,:][index] for Q in Qs]
+    else
+        X = [Q[1,:] for Q in Qs]
+        Y = [Q[2,:] for Q in Qs]
+    end
     return plot(X,Y,label=hcat(names...);kwargs...)
 end
 
