@@ -16,10 +16,36 @@ function i_euler_step(q,p,dt,HS;tol = 1e-6,max_iter=100,no_warning=false)
         P=Pn
     end
     if !no_warning
-        println("WARNING: Implicity euler step did not reach tol.")
+        println("WARNING: Implicit euler step did not reach tol.")
     end
     return (dt,Q,P)
 end
+
+function midpoint_step(q,p,dt,HS)
+    Q = q+dt*HS.Minv*p
+    P = p+dt*HS.F(q)
+    Q = q+dt*HS.Minv*((p+P)/2)
+    P = p+dt*HS.F((q+Q)/2)
+    return (dt,Q,P)
+end
+
+function i_midpoint_step(q,p,dt,HS;tol = 1e-6,max_iter=100,no_warning=false)
+    Q=q;P=p
+    for i in 1:max_iter
+        Qn = q+dt*HS.Minv*((p+P)/2)
+        Pn = p+dt*HS.F((q+Q)/2)
+        if norm(Qn-Q)<=tol && norm(Pn-P)<=tol
+            return (dt,Qn,Pn)
+        end
+        Q=Qn
+        P=Pn
+    end
+    if !no_warning
+        println("WARNING: Implicit midpoint step did not reach tol.")
+    end
+    return (dt,Q,P)
+end
+
 
 function theta_step(q,p,dt,HS;theta=0.5, kwargs...)
     _,Qe,Pe = euler_step(q,p,dt,HS)
@@ -34,9 +60,29 @@ function s_euler_step(q,p,dt,HS)
     return (dt,Q,P)
 end
 
+function sa_euler_step(q,p,dt,HS)
+    Q = q+dt*HS.Minv*p
+    P = p+dt*HS.F(Q)
+    return (dt,Q,P)
+end
+
 function verlet_step(q,p,dt,HS)
     Q = q+dt*HS.Minv*p+dt^2/2*HS.Minv*HS.F(q)
     P = p+dt/2*(HS.F(q)+HS.F(Q))
+    return (dt,Q,P)
+end
+
+function q_split_verlet_step(q,p,dt,HS)
+    Q = q + dt/2*HS.Minv*p
+    P = p + dt*(HS.F(Q))
+    Q = Q + dt/2*HS.Minv*P
+    return (dt,Q,P)
+end
+
+function p_split_verlet_step(q,p,dt,HS)
+    P = p + dt/2*(HS.F(q))
+    Q = q + dt*HS.Minv*P
+    P = P + dt/2*(HS.F(Q))
     return (dt,Q,P)
 end
 
